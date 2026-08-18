@@ -6,9 +6,7 @@
 // @author       lattaamy828
 // @match        *://*/*
 // @run-at       document-start
-// @grant        GM_getValue
-// @grant        GM_setValue
-// @grant        GM_registerMenuCommand
+// @grant        none
 // ==/UserScript==
 
 (function () {
@@ -18,16 +16,6 @@
   const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform) ||
     (navigator.userAgentData && navigator.userAgentData.platform === 'macOS');
   if (!isMac) return;
-
-  const STORAGE_KEY = 'mac2win-enabled';
-  let enabled = typeof GM_getValue === 'function' ? GM_getValue(STORAGE_KEY, true) : true;
-  if (typeof GM_registerMenuCommand === 'function') {
-    GM_registerMenuCommand(enabled ? 'Tắt Ctrl→Cmd remap' : 'Bật Ctrl→Cmd remap', () => {
-      if (typeof GM_setValue === 'function') GM_setValue(STORAGE_KEY, !enabled);
-      location.reload();
-    });
-  }
-  if (!enabled) return;
 
   // Danh sách phím Ctrl+<phim> sẽ được remap. Thêm/bớt phím tại đây để tùy chỉnh.
   const REMAPPED_KEYS = new Set(['c', 'v', 'x', 'a', 'z', 'y', 's', 'f', 'b', 'i', 'u', 'k']);
