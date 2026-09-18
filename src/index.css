@@ -1,0 +1,233 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
+    --amb-1: #0b1026;
+    --amb-2: #18265a;
+    --amb-glow: #e3b23c;
+    --nav-h: 76px;
+  }
+
+  * { -webkit-tap-highlight-color: transparent; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-color: #2a5fd7 #070a18;
+  }
+
+  body {
+    @apply bg-midnight text-cream font-sans antialiased;
+    margin: 0;
+    overflow-x: clip;
+    background-color: var(--amb-1);
+    transition: background-color 1.2s var(--ease-silk);
+  }
+
+  /* Canvas weave: the whole site sits on a primed linen ground. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.022) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.03) 0 1px, transparent 1px 3px);
+  }
+
+  ::selection { background: rgba(227, 178, 60, 0.32); color: #fbf6ec; }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #070a18; }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #2a5fd7, #1b3a8c);
+    border-radius: 99px;
+    border: 2px solid #070a18;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #e3b23c, #c0902a); }
+
+  :focus-visible {
+    outline: 2px solid #f2c14e;
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  h1, h2, h3, h4 { @apply font-display; text-wrap: balance; }
+  p { text-wrap: pretty; }
+
+  img { max-width: 100%; display: block; }
+}
+
+@layer components {
+  .shell { @apply mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12; }
+
+  .eyebrow {
+    @apply font-sans text-[10px] sm:text-[11px] uppercase tracking-widest2 text-gold-200/70;
+  }
+
+  .glass {
+    background: linear-gradient(145deg, rgba(244, 234, 215, 0.075), rgba(11, 16, 38, 0.5));
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
+    border: 1px solid rgba(244, 234, 215, 0.13);
+  }
+
+  /* Gilded museum frame, drawn entirely with gradients. */
+  .gilt {
+    box-shadow:
+      inset 0 0 0 1px rgba(227, 178, 60, 0.5),
+      inset 0 0 0 7px rgba(11, 16, 38, 0.92),
+      inset 0 0 0 8px rgba(227, 178, 60, 0.28),
+      0 30px 70px -30px rgba(0, 0, 0, 0.95);
+  }
+
+  .gilt-lux {
+    border: 10px solid transparent;
+    border-image: linear-gradient(140deg, #f7dd9b, #c0902a 22%, #6b4423 46%, #e3b23c 62%, #8a6520 82%, #f7dd9b) 1;
+    box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.95), inset 0 0 40px rgba(0, 0, 0, 0.55);
+  }
+
+  .text-gilt {
+    background: linear-gradient(100deg, #f7dd9b, #e3b23c 26%, #fbf6ec 44%, #c0902a 64%, #f2c14e);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    @apply animate-shimmer;
+  }
+
+  .rule {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(227, 178, 60, 0.45), transparent);
+  }
+
+  /* Museum wall label */
+  .placard {
+    background: linear-gradient(160deg, rgba(251, 246, 236, 0.95), rgba(229, 215, 189, 0.88));
+    color: #2a2013;
+    box-shadow: 0 16px 34px -18px rgba(0, 0, 0, 0.9);
+  }
+
+  .btn {
+    @apply relative inline-flex select-none items-center justify-center gap-2 overflow-hidden
+           font-sans text-[11px] uppercase tracking-widest2 transition-all duration-500;
+    transition-timing-function: var(--ease-silk);
+  }
+
+  .btn-gold {
+    @apply btn rounded-full px-7 py-3.5 text-midnight;
+    background: linear-gradient(120deg, #f7dd9b, #e3b23c 40%, #c0902a);
+    box-shadow: 0 14px 34px -14px rgba(227, 178, 60, 0.85);
+  }
+  .btn-gold:hover { box-shadow: 0 20px 44px -12px rgba(227, 178, 60, 0.95); filter: brightness(1.06); }
+
+  .btn-ghost {
+    @apply btn rounded-full border border-cream/25 px-7 py-3.5 text-cream/90;
+  }
+  .btn-ghost:hover { @apply border-gold/70 text-gold-200; background: rgba(227, 178, 60, 0.08); }
+
+  .btn-quiet {
+    @apply btn rounded-full border border-cream/15 px-4 py-2 text-[10px] text-cream/70;
+  }
+  .btn-quiet:hover { @apply border-gold/50 text-gold-200; }
+
+  .field {
+    @apply w-full rounded-full border border-cream/15 bg-midnight-800/60 px-5 py-3
+           font-sans text-sm text-cream placeholder:text-cream/35 outline-none transition;
+  }
+  .field:focus { @apply border-gold/60; box-shadow: 0 0 0 3px rgba(227, 178, 60, 0.14); }
+
+  .card-oil {
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(42, 95, 215, 0.14), transparent 62%),
+      linear-gradient(170deg, rgba(17, 26, 61, 0.9), rgba(7, 10, 24, 0.96));
+    border: 1px solid rgba(244, 234, 215, 0.1);
+  }
+
+  .hairline { border-color: rgba(244, 234, 215, 0.12); }
+}
+
+@layer utilities {
+  /*
+   * Sections below the fold are heavy (each generated canvas is dozens of vector
+   * paths). `content-visibility` lets the browser skip their layout and paint
+   * until they approach the viewport; the intrinsic size keeps the scrollbar
+   * honest in the meantime.
+   */
+  .defer-paint {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+
+  .preserve-3d { transform-style: preserve-3d; }
+  .backface-hidden { backface-visibility: hidden; }
+  .perspective-800 { perspective: 800px; }
+  .perspective-1400 { perspective: 1400px; }
+  .will-transform { will-change: transform; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  }
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
+    mask-image: linear-gradient(180deg, #000 55%, transparent);
+  }
+
+  /*
+   * Soft impasto ridge under a *static* object. Chained drop-shadows here cost
+   * a full re-rasterisation per frame whenever the element moves, so anything
+   * that animates uses the shadow baked into the vessel's own SVG instead.
+   */
+  .impasto {
+    filter: drop-shadow(0 20px 22px rgba(0, 0, 0, 0.55));
+  }
+}
+
+@keyframes vesselFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -18px, 0) rotate(1.6deg);
+  }
+}
+
+/* Screen-reader-only helper used by skip links and icon buttons. */
+.sr-only-focusable:not(:focus):not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---- Reduced motion: strip animation, keep every layout and control ---- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Same, but driven by the in-page "reduce motion" switch. */
+html[data-motion='off'] *,
+html[data-motion='off'] *::before,
+html[data-motion='off'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
