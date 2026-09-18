@@ -16,10 +16,11 @@ twenty-four cosmetics whose shades, textures and names are drawn from them.
 
 ## Every painting is generated in code
 
-There isn't a single bitmap on this site. All eighteen canvases — eight after
-Van Gogh, ten after other masters — are **generated as SVG from seeded
-geometry**: turbulent flow fields for skies, tapered comma dabs for impasto,
-flame-shaped silhouettes for cypresses, tessellated rectangles for gold leaf.
+Out of the box there isn't a single bitmap on this site. All eighteen canvases —
+eight after Van Gogh, ten after other masters — are **generated as SVG from
+seeded geometry**: turbulent flow fields for skies, tapered comma dabs for
+impasto, flame-shaped silhouettes for cypresses, tessellated rectangles for gold
+leaf.
 
 They are **original interpretations in the spirit of** the public-domain works
 they are named after, never reproductions of them.
@@ -46,6 +47,41 @@ The same approach draws the products: `src/components/Vessel.tsx` builds nine
 kinds of cosmetic vessel (flacon, lipstick, dropper, jar, palette, brush, tube,
 compact, coffret) from gradients and fake specular light, with the product's own
 painting projected through the glass or onto the lid.
+
+### Or use the real paintings
+
+If you would rather see the actual works, run:
+
+```bash
+npm run fetch:art          # everything that is missing
+npm run fetch:art -- --force
+npm run fetch:art -- starry-night irises
+```
+
+This pulls public-domain photographs from Wikimedia Commons into
+`src/art/plates/`. Because every painting on the site renders through the single
+`Painting` module, each plate that lands there **takes over automatically** —
+gallery walls, product cards, the projections inside the glass, the framed
+canvases, and the opening sequence's brush-mask reveal, which works on a
+photograph exactly as it does on vector geometry. Delete a plate and that
+painting goes back to being generated. The two modes mix freely, so a partial
+download is fine.
+
+A few caveats worth knowing:
+
+- **Licensing is uneven.** The paintings are long out of copyright, but the
+  licence on a given *photograph* varies. Commons hosts these as PD-Art, on the
+  basis that a faithful reproduction of a 2D public-domain work carries no new
+  copyright in the US (*Bridgeman v. Corel*); other jurisdictions differ. Some
+  museums hold their images tightly — MoMA licenses *The Starry Night* through
+  Art Resource rather than releasing it. The script writes the licence tag and
+  credit line for every file it downloads to `src/art/plates/CREDITS.md`. Read
+  it before going beyond a demo.
+- **Weight.** Eighteen plates at 1600px are roughly 5–10 MB, against
+  approximately zero today.
+- **Loading.** Plates are inline `<image>` inside the SVG, so they are not lazily
+  loaded individually; the `content-visibility` deferral on below-fold sections
+  does most of that work instead.
 
 ## The opening sequence
 
@@ -114,14 +150,24 @@ nothing is lost but the movement.
 React 18 · TypeScript · Vite · Tailwind CSS · React Router · Lucide icons.
 
 No animation library: every transition is a CSS transition, a keyframe, or the
-Web Animations API. No image assets. No Three.js — the 3D is CSS perspective and
-hand-built specular gradients, which render faster and stay crisp at any size.
+Web Animations API. No image assets unless you fetch them. No Three.js — the 3D
+is CSS perspective and hand-built specular gradients, which render faster and
+stay crisp at any size.
 
 ## Running it
 
 ```bash
 npm install
-npm run dev      # development server
-npm run build    # typecheck + production build
-npm run preview  # serve the build
+npm run dev        # development server
+npm run build      # typecheck + production build
+npm run preview    # serve the build
+npm run fetch:art  # optional: real paintings instead of generated ones
+```
+
+To serve the build as a plain static page from any path — no server rewrites, no
+route configuration — use the standalone mode, which emits relative asset paths
+and switches the router to hash routing:
+
+```bash
+VITE_HASH_ROUTER=1 npm run build:standalone
 ```

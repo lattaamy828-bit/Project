@@ -9,6 +9,34 @@ export const PAINTING_BY_ID = new Map(PAINTINGS.map((p) => [p.id, p]));
 export type PaintingId = string;
 
 /**
+ * Photographic plates, if any are present.
+ *
+ * `src/art/plates/` is empty by default and the site draws its own canvases.
+ * Running `npm run fetch:art` fills it with public-domain photographs from
+ * Wikimedia Commons, and every painting on the site — gallery walls, product
+ * cards, the projections inside the glass, the opening sequence's brush mask —
+ * switches to the photograph, because they all render through this one module.
+ * Delete the folder's contents and it switches back. Vite resolves the glob at
+ * build time, so an absent plate costs nothing at all in the bundle.
+ */
+const PLATE_URLS = import.meta.glob('./plates/*.{jpg,jpeg,png,webp,avif}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>;
+
+const PLATES = new Map(
+  Object.entries(PLATE_URLS).map(([file, url]) => [
+    file.split('/').pop()!.replace(/\.[^.]+$/, ''),
+    url,
+  ]),
+);
+
+/** Whether this painting is currently backed by a photograph rather than geometry. */
+export const hasPlate = (id: string) => PLATES.has(id);
+export const plateCount = () => PLATES.size;
+
+/**
  * Generated geometry is cached per painting id. Each spec costs a few thousand
  * trig calls to build, so a page that shows the same canvas in a card, a hero
  * and a lightbox pays for it exactly once.
@@ -18,7 +46,19 @@ const cache = new Map<string, ReactNode>();
 function bodyFor(spec: PaintingSpec): ReactNode {
   const hit = cache.get(spec.id);
   if (hit) return hit;
-  const built = spec.render(rngFor(spec.id));
+
+  const plate = PLATES.get(spec.id);
+  /*
+   * A plate is drawn into the spec's own viewBox and cropped to it, so every
+   * layout, mask, pattern and aspect ratio downstream behaves identically
+   * whether the canvas is a photograph or generated geometry.
+   */
+  const built = plate ? (
+    <image href={plate} x="0" y="0" width={spec.w} height={spec.h} preserveAspectRatio="xMidYMid slice" />
+  ) : (
+    spec.render(rngFor(spec.id))
+  );
+
   cache.set(spec.id, built);
   return built;
 }
